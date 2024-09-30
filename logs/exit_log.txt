@@ -1,5 +1,0 @@
-Usman Ahmed, 2024-09-30 11:30:05, 86.0s
-Unknown_0, 2024-09-30 11:30:08, no detected on entry
-Usman Ahmed, 2024-09-30 11:35:41, 17.0s
-Unknown_0, 2024-09-30 11:40:00, 20.0s
-Usman Ahmed, 2024-09-30 11:40:00, 20.0s
