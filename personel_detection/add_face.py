@@ -5,6 +5,7 @@ import face_recognition
 conn = sqlite3.connect('face_data.db')
 cursor = conn.cursor()
 
+#Encode face from image and store in DB
 def encode_face(name, image_path):
     image = face_recognition.load_image_file(image_path)
     face_encodings = face_recognition.face_encodings(image)

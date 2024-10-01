@@ -20,7 +20,7 @@ face_names = []
 
 unknown_faces = 0
 detected_persons = set()
-log_file = "logs/entry_log.txt"
+entry_log_file = "logs/entry_log.txt"
 
 #Load data from DB
 def load_faces():
@@ -80,7 +80,7 @@ def check_for_faces(frame, person_boxes, face_locations):
 #Log a detected person with their name and entry time
 def log_person(name):
     current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-    with open(log_file, "a") as file:
+    with open(entry_log_file, "a") as file:
         file.write(f"{name}, {current_time}\n")
     return
 
@@ -88,9 +88,9 @@ def log_person(name):
 def save_unknown_face(face_encoding):
     global unknown_faces
     known_face_encodings.append(face_encoding)
-    known_face_names.append(f"Unknown_{unknown_faces}")
+    known_face_names.append(f"Unknown {unknown_faces}")
     encoding_blob = np.array(face_encoding).tobytes()
-    cursor.execute("REPLACE INTO faces (name, encoding) VALUES (?, ?)", (f"Unknown_{unknown_faces}", encoding_blob))
+    cursor.execute("REPLACE INTO faces (name, encoding) VALUES (?, ?)", (f"Unknown {unknown_faces}", encoding_blob))
     conn.commit()
     unknown_faces += 1
     return

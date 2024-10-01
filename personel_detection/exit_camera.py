@@ -21,7 +21,7 @@ face_names = []
 
 unknown_faces = 0
 detected_persons = set()
-log_file = "logs/entry_log.txt"
+entry_log_file = "logs/entry_log.txt"
 exit_log_file = "logs/exit_log.txt"
 
 #Load data from DB
@@ -82,9 +82,8 @@ def check_for_faces(frame, person_boxes, face_locations):
 #Checks a persons entry time and log their name and exit time 
 def log_person(name):
     current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-    
     previous_time = None
-    with open(log_file, "r") as file:
+    with open(entry_log_file, "r") as file:
         for line in file:
             log_name, log_time = line.strip().split(", ")
             if log_name == name:
@@ -94,7 +93,6 @@ def log_person(name):
         previous_time_obj = datetime.strptime(previous_time, "%Y-%m-%d %H:%M:%S")
         current_time_obj = datetime.strptime(current_time, "%Y-%m-%d %H:%M:%S")
         duration = (current_time_obj - previous_time_obj).total_seconds()
-        
         with open(exit_log_file, "a") as new_file:
             new_file.write(f"{name}, {current_time}, {duration}s\n")
     else:
