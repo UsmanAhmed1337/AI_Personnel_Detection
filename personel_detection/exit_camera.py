@@ -10,7 +10,7 @@ from datetime import datetime
 conn = sqlite3.connect('face_data.db')
 cursor = conn.cursor()
 model = YOLO("models/yolov8n.pt")
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture('inference_test.mp4')
 
 #Variables for faces
 known_face_encodings = []
@@ -152,21 +152,26 @@ def face_recognize(frame):
 def main():
     load_faces()
     frame_count = 0
+    start_time = time.time()
     while True:
         ret, frame = cap.read()
+        if not ret:  
+            break
         frame, person_boxes = person_detect(frame)
         if frame_count % 2 == 0:
             frame, face_locations, face_names = face_recognize(frame)
         frame = draw_facebox(frame, face_locations, face_names)
         frame = check_for_faces(frame, person_boxes, face_locations)
         frame_count += 1
-        cv2.imshow('Webcam', frame)
+        # cv2.imshow('Webcam', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
     cap.release()
     cv2.destroyAllWindows()
     conn.close()
+    inference_time = time.time() - start_time
+    print(inference_time)
     return
 
 main()

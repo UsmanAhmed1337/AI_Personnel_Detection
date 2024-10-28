@@ -9,7 +9,7 @@ import sqlite3
 conn = sqlite3.connect('face_data.db')
 cursor = conn.cursor()
 model = YOLO("models/yolov8n.pt")
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture('1025.mp4')
 
 #Variables for faces
 known_face_encodings = []
@@ -31,7 +31,6 @@ def load_faces():
         encoding = np.frombuffer(row[1], dtype=np.float64)
         known_face_names.append(name)
         known_face_encodings.append(encoding)
-        print(known_face_names)
         print(known_face_encodings)
     return
 
@@ -135,10 +134,15 @@ def face_recognize(frame):
 
 #Main function (no shit sherlock)
 def main():
+    w, h, fps = (int(cap.get(x)) for x in (cv2.CAP_PROP_FRAME_WIDTH, cv2.CAP_PROP_FRAME_HEIGHT, cv2.CAP_PROP_FPS))
+    video_writer = cv2.VideoWriter("personnel_demo.mp4", cv2.VideoWriter_fourcc(*"mp4v"), fps, (w, h))
     load_faces()
     frame_count = 0
+    start_time = time.time()
     while True:
         ret, frame = cap.read()
+        if not ret:  
+            break
         frame, person_boxes = person_detect(frame)
         if frame_count % 2 == 0:
             frame, face_locations, face_names = face_recognize(frame)
@@ -146,12 +150,15 @@ def main():
         frame = check_for_faces(frame, person_boxes, face_locations)
         frame_count += 1
         cv2.imshow('Webcam', frame)
+        video_writer.write(frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
     cap.release()
+    video_writer.release()
     cv2.destroyAllWindows()
     conn.close()
+    inference_time = time.time() - start_time
     return
 
 main()
